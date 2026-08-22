@@ -65,43 +65,46 @@ I picked this workflow because it's the highest-priority item from the triage an
 [CLINIC] Clinician sees patient
         │
         ▼
-Clinician documents visit + enters order in EHR (system of record)
-        │
-        ├─── 🔴 BREAK [INFERRED from Slack]: ~8 of 55 clinicians (disproportionately
-        │    high-volume) do NOT chart in real time. They use a personal note template
-        │    and batch entries on weekends — EHR shows nothing until then.
-        ▼
-[AUTH TEAM] Reviews EHR for orders requiring prior authorization
-        │
-        ├─── 🔴 HANDOFF BREAK: if the clinician hasn't charted yet, auth team has
-        │    nothing to work from and must chase the clinician directly, ad hoc
-        │    (per the Alvarez/Dr. K Slack thread — "we ask him")
-        ▼
-[AUTH TEAM] Gathers clinical information from the chart
+Clinician documents visit and enters order in the EHR (system of record)
         │
         ▼
-[AUTH TEAM] Manually re-types/reformats clinical info into the specific payer's
-portal — one of ~12 different formats, no integration between EHR and portals
-        │
-        ├─── 🔴 BREAK: this is the single most-cited bottleneck (Dana Reyes) —
-        │    pure manual re-entry, repeated ~1,100 times/month
-        ▼
-[AUTH TEAM] Logs the submission in Prior Auth Tracker MASTER v7 FINAL.xlsx
-(patient initials, clinician, payer, procedure, dates, status, free-text notes)
-        │
-        ├─── 🔴 BREAK: three systems (EHR, payer portal, spreadsheet) now hold
-        │    overlapping, sometimes conflicting data. Ops treats the spreadsheet
-        │    as truth because it's the only place the notes column exists.
-        ▼
-[PAYER — external, outside Westbrook's control] Reviews and returns a decision
+◇ Documentation complete?
+       │
+ ┌─────┴─────────┐
+ │               │
+Yes             No
+ │               │
+ ▼               ▼
+Authorization    🔴 Follow-up with clinician
+Team proceeds    (Observed in Slack thread)
         │
         ▼
-[AUTH TEAM] Receives decision → updates EHR + spreadsheet
+Authorization Team reviews chart
         │
-        ├─── 🔴 BREAK [INFERRED]: no evidence of a systematic notification back
-        │    to scheduling — appears to depend on the auth team remembering to flag it
         ▼
-[SCHEDULING] Books the visit — only possible once auth is approved
+Authorization Team gathers required clinical information
+        │
+        ▼
+Authorization Team manually enters information into payer portal
+🔴 One of the most consistently identified operational pain points
+(~1,100 prior authorizations/month)
+        │
+        ▼
+Authorization Team updates Prior Authorization Tracker
+🔴 Spreadsheet used operationally alongside the EHR
+        │
+        ▼
+Payer reviews request
+        │
+        ▼
+◇ Approved?
+     │
+ ┌───┴────┐
+ │        │
+Yes      Pending / Denied
+ │        │
+ ▼        ▼
+Scheduling   Authorization follow-up
 ```
 
 **Decision points:** (1) Was the chart closed in real time, or does auth team have to chase it? (2) Approved / denied / pending — pending cases appear to sit with no visible SLA or escalation path in the materials.
